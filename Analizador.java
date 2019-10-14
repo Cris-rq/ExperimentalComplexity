@@ -10,8 +10,6 @@ public class Analizador {
 	 * mínimamente los requisitos de esta practica.
 	 * Notese que ni siquiera esta completa......
 	 */
-
-	 // TEST HOLA
 	
 	public static String masCercano(double ratio) {
 			if (ratio < 1.5) {                      // aprox 1.0

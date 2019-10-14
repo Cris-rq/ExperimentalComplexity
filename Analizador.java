@@ -1,3 +1,5 @@
+import java.util.List;
+import java.util.Arrays;
 
 public class Analizador {
 	
@@ -50,6 +52,11 @@ public class Analizador {
 
 		long matriz[][] = calcularMatrizTiempos();
 		mostrarTabla(matriz);
+		System.out.println("---- MEDIA ----\n");
+		mostrarVector(calcularVectorMediaTiempos(matriz));
+		System.out.println("\n---- MINIMO ----\n");
+		mostrarVector(calcularVectorMinimoTiempos(matriz));
+		System.out.println("\n");
 
 		long t2 = System.currentTimeMillis();
 		long temp = t2-t1;
@@ -75,10 +82,8 @@ public class Analizador {
 		return matrizTiempos;
 	}
 
-	public static long[] calcularVectorMediaTiempos(long matriz[][]){
-		long [] vector = new long [NUM_EJECUCIONES]; 
-		
-		// QUIERO JUGAR AL LOL :3 <3
+	public static double[] calcularVectorMediaTiempos(long matriz[][]){
+		double [] vector = new double[NUM_DATOS]; 
 
 		for(int i = 0; i < NUM_DATOS; i++){
 			int sum = 0;
@@ -86,14 +91,17 @@ public class Analizador {
 				for(int j = 0; j < NUM_EJECUCIONES; j++){
 					sum += matriz[j][i];
 				}
-			media = sum / NUM_EJECUCIONES;
+			media = (double) sum / NUM_EJECUCIONES;
 			vector[i] = media;
 			
 		}
+
+		return vector;
+
 	}
 
-	public static long[] calcularVectorMinimoTiempos(long matriz[][]){
-		long vector[] = new long[NUM_DATOS];
+	public static double[] calcularVectorMinimoTiempos(long matriz[][]){
+		double vector[] = new double[NUM_DATOS];
 		long aux[] = new long[NUM_EJECUCIONES];
 
 		for(int i = 0; i < NUM_DATOS; i++){
@@ -106,10 +114,10 @@ public class Analizador {
 		return vector;
 	}
 
-	private static long caclularMinimoVector(long vector[]){
-		long minimo = vector[0];
-		for(long n : vector){
-			if(minimo < v){
+	private static double calcularMinimoVector(long vector[]){
+		double minimo = vector[0];
+		for(long v : vector){
+			if(minimo > v){
 				minimo = v;
 			}
 		}
@@ -117,13 +125,19 @@ public class Analizador {
 	}
 
 	public static void mostrarTabla(long tabla[][]){
-		System.out.println("---- TABLA ----");	
+		System.out.println("---- TABLA ----\n");	
 
 		for(int i = 0; i < NUM_EJECUCIONES; i++){
 			for(int j = NUM_DATOS; j < 2*NUM_DATOS; j++){
 				System.out.print(tabla[i][j-NUM_DATOS] + "  ");
 			}
 			System.out.println("\n");
+		}
+	}
+
+	public static void mostrarVector(double [] vector){
+		for(double d : vector){
+			System.out.print(d + "  ");
 		}
 	}
 }

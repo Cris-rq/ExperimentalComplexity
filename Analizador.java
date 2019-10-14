@@ -2,7 +2,6 @@ import java.util.List;
 import java.util.Arrays;
 
 public class Analizador {
-	
 	/* 
 	 * NOTA IMPORTANTE
 	 * 
@@ -45,20 +44,24 @@ public class Analizador {
 	} */
 
 	public static final int NUM_EJECUCIONES = 5;
-	
 	public static final int NUM_DATOS = 10;
+	public static final int INICIO_DATOS = 10;
+	public static final int FINAL_DATOS = 20;
+	public static final int NUM_FUNCIONES = 3;
 
 	public static void main(String[] args) {
 		long t1 = System.currentTimeMillis();	
 
 		long matriz[][] = calcularMatrizTiempos();
-		mostrarTabla(matriz);
+		mostrarTabla(matriz, NUM_EJECUCIONES, NUM_DATOS);
 		System.out.println("---- MEDIA ----\n");
-		mostrarVector(calcularVectorMediaTiempos(matriz));
+		double [] medias = calcularVectorMediaTiempos(matriz);
+		mostrarVector(medias);
 		System.out.println("\n---- MINIMO ----\n");
 		mostrarVector(calcularVectorMinimoTiempos(matriz));
-		System.out.println("\n");
-
+		System.out.println("\n---- LIMITES ----\n");
+		mostrarTablaD(calcularMatrizLimites(medias), NUM_FUNCIONES, NUM_DATOS);
+		
 		long t2 = System.currentTimeMillis();
 		long temp = t2-t1;
 
@@ -69,13 +72,13 @@ public class Analizador {
 		long matrizTiempos[][] = new long[NUM_EJECUCIONES][NUM_DATOS];
 
 		for(int i = 0; i < NUM_EJECUCIONES; i++){
-			for(int n = NUM_DATOS; n < 2*NUM_DATOS; n++){ //n = tam datos
+			for(int n = INICIO_DATOS; n < FINAL_DATOS; n++){ //n = tam datos
 				Temporizador t = new Temporizador(1);
 				t.iniciar();
 				Algoritmo.f(n*((long) Math.pow(10,3))); //
 				t.parar();
 				long tiempo = t.tiempoPasado();
-				matrizTiempos[i][n-NUM_DATOS] = tiempo;
+				matrizTiempos[i][n-INICIO_DATOS] = tiempo;
 				t.reiniciar();
 			}
 		}
@@ -125,12 +128,23 @@ public class Analizador {
 		return minimo;
 	}
 
-	public static void mostrarTabla(long tabla[][]){
+	public static void mostrarTabla(long [][] tabla, long filas, long columnas){
 		System.out.println("---- TABLA ----\n");	
 
-		for(int i = 0; i < NUM_EJECUCIONES; i++){
-			for(int j = NUM_DATOS; j < 2*NUM_DATOS; j++){
-				System.out.print(tabla[i][j-NUM_DATOS] + "  ");
+		for(int i = 0; i < filas; i++){
+			for(int j = 0; j < columnas; j++){
+				System.out.print(tabla[i][j] + "  ");
+			}
+			System.out.println("\n");
+		}
+	}
+
+	public static void mostrarTablaD(double [][] tabla, long filas, long columnas){
+	//	System.out.println("---- TABLA ----\n");	
+
+		for(int i = 0; i < filas; i++){
+			for(int j = 0; j < columnas; j++){
+				System.out.print(tabla[i][j] + "  ");
 			}
 			System.out.println("\n");
 		}
@@ -141,4 +155,41 @@ public class Analizador {
 			System.out.print(d + "  ");
 		}
 	}
+
+	public static double[][] calcularMatrizLimites(double vector[]){
+		double matriz [][] = new double [NUM_FUNCIONES][NUM_DATOS];
+
+		for(int i = 0; i < NUM_FUNCIONES; i++){
+			for(int j = 0; j < NUM_DATOS; j++){
+
+				switch(i){
+					case 0: 
+						matriz[i][j] = vector[j]/funcLineal((j+INICIO_DATOS)*((long) Math.pow(10,3)));
+						break;
+					case 1:
+						matriz[i][j] = vector[j]/funcCuadratica((j+INICIO_DATOS)*((long) Math.pow(10,3)));
+						break;
+					case 2:
+						matriz[i][j] = vector[j]/funcCubica((j+INICIO_DATOS)*((long) Math.pow(10,3)));
+						break;
+				}
+			}
+		}
+
+		return matriz;
+	}
+
+	private static double funcLineal(double tamDatos){
+		return tamDatos;
+	}
+	
+	private static double funcCuadratica(double tamDatos){
+		return Math.pow(tamDatos,2);
+	}
+
+	private static double funcCubica(double tamDatos){
+		return Math.pow(tamDatos,3);
+	}
+	
+
 }

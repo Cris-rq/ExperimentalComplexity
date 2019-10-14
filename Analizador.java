@@ -75,8 +75,8 @@ public class Analizador {
 		return matrizTiempos;
 	}
 
-	public static long[] calcularVectorMediaTiempos(long matriz[][]){
-		long [] vector = new long [NUM_EJECUCIONES]; 
+	public static double[] calcularVectorMediaTiempos(long matriz[][]){
+		double [] vector = new long [NUM_EJECUCIONES]; 
 		
 		// QUIERO JUGAR AL LOL :3 <3
 
@@ -106,9 +106,9 @@ public class Analizador {
 		return vector;
 	}
 
-	private static long caclularMinimoVector(long vector[]){
+	private static long calcularMinimoVector(long vector[]){
 		long minimo = vector[0];
-		for(long n : vector){
+		for(long v : vector){
 			if(minimo < v){
 				minimo = v;
 			}

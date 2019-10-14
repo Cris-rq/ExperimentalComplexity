@@ -78,11 +78,13 @@ public class Analizador {
 	public static long[] calcularVectorMediaTiempos(long matriz[][]){
 		long [] vector = new long [NUM_EJECUCIONES]; 
 		
-		for(int i = 0; i < NUM_EJECUCIONES;i++){
-			int sum = 0
+		// QUIERO JUGAR AL LOL :3 <3
+
+		for(int i = 0; i < NUM_DATOS; i++){
+			int sum = 0;
 			double media = 0;
-				for(int j = 0; j < NUM_DATOS; j++){
-					sum += matriz[i][j];
+				for(int j = 0; j < NUM_EJECUCIONES; j++){
+					sum += matriz[j][i];
 				}
 			media = sum / NUM_EJECUCIONES;
 			vector[i] = media;

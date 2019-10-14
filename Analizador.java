@@ -45,6 +45,7 @@ public class Analizador {
 	} */
 
 	public static final int NUM_EJECUCIONES = 5;
+	
 	public static final int NUM_DATOS = 10;
 
 	public static void main(String[] args) {

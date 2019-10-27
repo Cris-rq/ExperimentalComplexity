@@ -1,5 +1,3 @@
-import java.math.BigInteger;
-
 public class Funcion{
 
     public enum Funciones {F1, FLOGN, FN, FNLOGN, FN2, FN3, F2N, FNF;}
@@ -10,7 +8,7 @@ public class Funcion{
     }
 
     public double calcular(long numero){
-        BigInteger calc = new BigInteger(0);
+        double calc = 0;
 
         switch(funcion){
             case F1:
@@ -42,7 +40,7 @@ public class Funcion{
         return calc;
     }
 
-/*     public static double factorial(long numero){
+    public static double factorial(long numero){
         double resultado;
         if(numero == 0){
             resultado = 1;
@@ -52,22 +50,9 @@ public class Funcion{
         }
 
         return resultado;
-    } */
-
-    BigInteger recfact(long start, long n) {
-        long i;
-        if (n <= 16) { 
-            BigInteger r = new BigInteger(start);
-            for (i = start + 1; i < start + n; i++) r *= i;
-            return r;
-        }
-        i = n / 2;
-        return recfact(start, i) * recfact(start + i, n - i);
     }
-    BigInteger factorial(long n) { return recfact(1, n); }
 
-    @Override
-    public String toString(){
+    public static String enumFuncionToString(Funciones funcion){
         String cadena = ""; 
         switch(funcion){
             case F1:

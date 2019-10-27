@@ -41,9 +41,14 @@ public class Estadistica{
         return desv;
     }
 
-    public static long[] minimoPorColumna(long [][] matriz, int filasMatriz, int columnasMatriz){
-        long [] vector = new long[filasMatriz];
-        long [] minimos = new long[columnasMatriz];
+    public static double coeficienteDeVariacion(double[] datos){
+        double coeficiente = desviacionTipica(datos) / media(datos);
+        return coeficiente;
+    }
+
+    public static double[] minimoPorColumna(long [][] matriz, int filasMatriz, int columnasMatriz){
+        double [] vector = new double[filasMatriz];
+        double [] minimos = new double[columnasMatriz];
 
         for(int col = 0; col < columnasMatriz; col++){
             for(int fil = 0; fil < filasMatriz; fil++){
@@ -55,10 +60,10 @@ public class Estadistica{
         return minimos;
     }
 
-    public static long minimoVector(long [] vector){
-        long min = vector[0];
+    public static double minimoVector(double [] vector){
+        double min = vector[0];
         
-        for(long num : vector){
+        for(double num : vector){
             if(num < min){
                 min = num;
             }

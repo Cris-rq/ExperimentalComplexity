@@ -34,11 +34,11 @@ public class Analizador {
 		System.out.println(masCercano(ratio));
 	} */
 
-	public static final int NUM_EJECUCIONES = 5;
+	public static final int NUM_EJECUCIONES = 3;
 	public static final int NUM_DATOS = 10;
 	public static final int NUM_FUNCIONES = Funcion.Funciones.values().length;
 	public static final int TAMANO_DATOS_INICIAL = 10;
-	public static final int MULTIPLICADOR_TAMANO = 100000;
+	public static final int MULTIPLICADOR_TAMANO = 100;
 
 
 	public static void main(String[] args) {

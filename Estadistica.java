@@ -36,6 +36,23 @@ public class Estadistica{
         return var;
     }
 
+    public static int moda(int a[]) {
+        int maxValue = a[0], maxCount = 0;
+    
+        for (int i = 0; i < a.length; ++i) {
+            int count = 0;
+            for (int j = 0; j < a.length; ++j) {
+                if (a[j] == a[i]) ++count;
+            }
+            if (count > maxCount) {
+                maxCount = count;
+                maxValue = a[i];
+            }
+        }
+    
+        return maxValue;
+    }
+
     public static double desviacionTipica(double [] datos){
         double desv = Math.sqrt(varianza(datos));
         return desv;

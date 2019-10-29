@@ -8,58 +8,84 @@ import java.util.TimerTask;
 public class Analizador {
 
 	public static final int NUM_EJECUCIONES = 3;
+	public static final int NUM_COMPLEJIDADES = 3;
 	public static final int NUM_DATOS = 10;
 	public static final int NUM_FUNCIONES = Funcion.Funciones.values().length;
-	public static final int TAMANO_DATOS_INICIAL = 10;
-	public static final int MULTIPLICADOR_TAMANO = 100;
+	public static final long TAMANO_DATOS_INICIAL = 10;
+	public static final long MULTIPLICADOR_TAMANO = 10;
 
 	public static Timer timer = new Timer();
     public static TimerTask exitApp = new TimerTask() {
 		public void run() {
-			System.out.print("2N");
 			System.exit(0);
 		}
 	};
 
- 	public static void main(String[] args){	
-		timer.schedule(exitApp, new Date(System.currentTimeMillis()+10000));
+	public static void main(String[] args){
+		timer.schedule(exitApp, new Date(System.currentTimeMillis()+9500));
+
+		Funcion.Funciones [][] complejidadPorMultArr = new Funcion.Funciones[][];
+		for(int mult = 1; true; mult = mult*10){
+			Funcion.Funciones auxCompArr = new Funcion.Funciones[0];
+			for(int i = 0; i < NUM_COMPLEJIDADES; i++){
+				Funcion.Funciones comp = complejidad();
+
+				auxCompArr = Arrays.copyOf(auxCompArr, auxCompArr.length + 1);
+				auxCompArr[i] = comp;
+			}
+		}
+
+		Funcion.Funciones [] complejidadArr = new Funcion.Funciones[NUM_COMPLEJIDADES];
+
+		int [] complejidadIndexArr = new int[complejidadArr.length];
+		for(int i = 0; i < complejidadIndexArr.length; i++){
+			complejidadIndexArr[i] = complejidadArr[i].ordinal();
+		}
+		
+		int complejidadIndex = Estadistica.moda(complejidadIndexArr);
+		
+		Funcion.Funciones complejidad = Funcion.Funciones.values()[complejidadIndex];
+		System.out.println(Funcion.enumFuncionToString(complejidad));
+		
+		timer.cancel(); //POSIBLEMENTE SE QUITE
+	} 
+
+	private Funcion.Funciones complejidad(){
 		long tiempo1 = System.currentTimeMillis();
-		
-		Debugger.mostrar("MATRIZ:");
+		Debugger debugger = new Debugger();
+		debugger.desactivar();
+
 		long [][] matriz = tiemposEjecucion(TAMANO_DATOS_INICIAL, MULTIPLICADOR_TAMANO);
-		Debugger.mostrarMatriz(matriz);
+		debugger.mostrar("MATRIZ:");
+		debugger.mostrarMatriz(matriz);
 		
-		Debugger.mostrar("MINIMOS:");
-
 		double [] vectorMinimos = Estadistica.minimoPorColumna(matriz, NUM_EJECUCIONES, NUM_DATOS);
-
-		Debugger.mostrarVector(vectorMinimos);
-		Debugger.mostrar("DESVIACIONES:");
+		debugger.mostrar("MINIMOS:");
+		debugger.mostrarVector(vectorMinimos);
 
 		double [] vectorDesviaciones = dispersionLimitesFunciones(vectorMinimos);
-
-		Debugger.mostrarVector(vectorDesviaciones);
+		debugger.mostrar("DESVIACIONES:");
+		debugger.mostrarVector(vectorDesviaciones);
 
 		Funcion.Funciones complejidad = determinarComplejidad(vectorDesviaciones);
-		
+
 		long tiempo2 = System.currentTimeMillis(); 
 		double temp = tiempo2-tiempo1;
 
-		Debugger.mostrar("Tiempo transcurrido: " + temp/1000);
+		debugger.mostrar("Tiempo transcurrido: " + temp/1000);
+		debugger.mostrar(Funcion.enumFuncionToString(complejidad));
 
-		
-		System.out.println(Funcion.enumFuncionToString(complejidad));
-		timer.cancel();
-	} 
+		return complejidad;
+	}
 
 	/*  tiemposEjecucion()
 		Ejecuta el ALGORITMO para distintos tamaños de datos de entrada (NUM_DATOS) repetidas veces (NUM_EJECUCIONES).
 		Guarda los tiempos de ejecucion para cada tamaño de datos en una matriz de (NUM_EJECUCIONES x NUM_DATOS) celdas.
 	*/
-	public static long[][] tiemposEjecucion(int tamanoDatosInicial, int multiplicadorTamano){
+	private static long[][] tiemposEjecucion(long tamanoDatosInicial, long multiplicadorTamano){
 		long [][] matrizDeTiempos = new long[NUM_EJECUCIONES][NUM_DATOS];
 		Temporizador temp = new Temporizador(0);
-		int tamanoInicial = tamanoDatosInicial;
+		long tamanoInicial = tamanoDatosInicial;
 
 		for(int fil = 0; fil < NUM_EJECUCIONES; fil++){
 			tamanoInicial = tamanoDatosInicial;
@@ -84,7 +110,7 @@ public class Analizador {
 		Dado un vector, va a calcular el límite de este para cada una de
 		las funciones y devolverá un vector resultante con el coeficiente de variación.
 	*/
-	public static double[] dispersionLimitesFunciones(double [] vectorTiempos){
+	private static double[] dispersionLimitesFunciones(double [] vectorTiempos){
 		double [] vector = new double[NUM_DATOS];
 		double [] vectorCoeficiente = new double[NUM_FUNCIONES];
 		long n = TAMANO_DATOS_INICIAL;
@@ -102,7 +128,7 @@ public class Analizador {
 		return vectorCoeficiente;
 	}
 
-	public static Funcion.Funciones determinarComplejidad(double [] vectorDesviaciones){
+	private static Funcion.Funciones determinarComplejidad(double [] vectorDesviaciones){
 		int index  = -1;
 		double minimo = Estadistica.minimoVector(vectorDesviaciones);
 
@@ -114,4 +140,5 @@ public class Analizador {
 
 		return Funcion.Funciones.values()[index];
 	}
+
 }

@@ -2,30 +2,48 @@ import java.util.List;
 
 public class Debugger{
 
-    public static void mostrarComplejidad(Funcion.Funciones func){
-        System.out.println("Complejidad: " + func.name());
+    private Boolean estaActivado;
+
+    public Debugger(){
+        estaActivado = true;
     }
 
-    public static void mostrar(String texto){
-        System.out.println(texto);
+    public void activar(){
+        estaActivado = true;
     }
 
-    public static void saltoLinea(){
-        System.out.println("");
+    public void desactivar(){
+        estaActivado = false;
     }
 
-    public static void mostrarVector(double [] vec){
-        for(double n : vec){
-            Debugger.mostrar(String.valueOf(n));
+    public void mostrarComplejidad(Funcion.Funciones func){
+        if(estaActivado) System.out.println("Complejidad: " + func.name());
+    }
+
+    public void mostrar(String texto){
+        if(estaActivado) System.out.println(texto);
+    }
+
+    public void saltoLinea(){
+        if(estaActivado) System.out.println("");
+    }
+
+    public void mostrarVector(double [] vec){
+        if(estaActivado){
+            for(double n : vec){
+                mostrar(String.valueOf(n));
+            }
         }
     }
 
-    public static void mostrarMatriz(long [][] matriz){
-        for(long [] v : matriz){
-            for(long n : v){
-                System.out.print(n + "  ");
+    public void mostrarMatriz(long [][] matriz){
+        if(estaActivado){
+            for(long [] v : matriz){
+                for(long n : v){
+                    System.out.print(n + "  ");
+                }
+                saltoLinea();
             }
-            Debugger.saltoLinea();
         }
     }
 

@@ -8,15 +8,29 @@ import java.util.TimerTask;
 public class Analizador {
 
 	public static final int NUM_EJECUCIONES = 3;
-	public static final int NUM_COMPLEJIDADES = 3;
+	public static final int NUM_COMPLEJIDADES = 5;
 	public static final int NUM_DATOS = 10;
 	public static final int NUM_FUNCIONES = Funcion.Funciones.values().length;
 	public static final long TAMANO_DATOS_INICIAL = 10;
 	public static final long MULTIPLICADOR_TAMANO = 10;
+	public static Funcion.Funciones [][] complejidadPorMultArr = new Funcion.Funciones[0][0];
 
 	public static Timer timer = new Timer();
     public static TimerTask exitApp = new TimerTask() {
 		public void run() {
+			
+			Funcion.Funciones [] complejidadArr = complejidadPorMultArr[complejidadPorMultArr.length - 1];
+
+			int [] complejidadIndexArr = new int[complejidadArr.length];
+			for(int i = 0; i < complejidadIndexArr.length; i++){
+				complejidadIndexArr[i] = complejidadArr[i].ordinal();
+			}
+			
+			int complejidadIndex = Estadistica.moda(complejidadIndexArr);
+			
+			Funcion.Funciones complejidad = Funcion.Funciones.values()[complejidadIndex];
+			System.out.println(Funcion.enumFuncionToString(complejidad));
+
 			System.exit(0);
 		}
 	};
@@ -24,38 +38,31 @@ public class Analizador {
 	public static void main(String[] args){
 		timer.schedule(exitApp, new Date(System.currentTimeMillis()+9500));
 
-		Funcion.Funciones [][] complejidadPorMultArr = new Funcion.Funciones[][];
-		for(int mult = 1; true; mult = mult*10){
-			Funcion.Funciones auxCompArr = new Funcion.Funciones[0];
-			for(int i = 0; i < NUM_COMPLEJIDADES; i++){
-				Funcion.Funciones comp = complejidad();
+		for(long mult = 1; mult < Long.MAX_VALUE && mult > 0; mult = mult*10){
+			Funcion.Funciones [] auxCompArr = new Funcion.Funciones[0];
 
+			for(int i = 0; i < NUM_COMPLEJIDADES; i++){
+				Funcion.Funciones comp = complejidad(mult);
+				
 				auxCompArr = Arrays.copyOf(auxCompArr, auxCompArr.length + 1);
 				auxCompArr[i] = comp;
+				if(i == 0){
+					complejidadPorMultArr = Arrays.copyOf(complejidadPorMultArr, complejidadPorMultArr.length + 1);
+					complejidadPorMultArr[complejidadPorMultArr.length - 1] = auxCompArr;
+				}
+				else{
+					complejidadPorMultArr[complejidadPorMultArr.length - 1] = auxCompArr;
+				}
 			}
-		}
-
-		Funcion.Funciones [] complejidadArr = new Funcion.Funciones[NUM_COMPLEJIDADES];
-
-		int [] complejidadIndexArr = new int[complejidadArr.length];
-		for(int i = 0; i < complejidadIndexArr.length; i++){
-			complejidadIndexArr[i] = complejidadArr[i].ordinal();
-		}
-		
-		int complejidadIndex = Estadistica.moda(complejidadIndexArr);
-		
-		Funcion.Funciones complejidad = Funcion.Funciones.values()[complejidadIndex];
-		System.out.println(Funcion.enumFuncionToString(complejidad));
-		
-		timer.cancel(); //POSIBLEMENTE SE QUITE
+		}		
 	} 
 
-	private Funcion.Funciones complejidad(){
+	private static Funcion.Funciones complejidad(long multiplicador){
 		long tiempo1 = System.currentTimeMillis();
 		Debugger debugger = new Debugger();
 		debugger.desactivar();
 
-		long [][] matriz = tiemposEjecucion(TAMANO_DATOS_INICIAL, MULTIPLICADOR_TAMANO);
+		long [][] matriz = tiemposEjecucion(TAMANO_DATOS_INICIAL, multiplicador);
 		debugger.mostrar("MATRIZ:");
 		debugger.mostrarMatriz(matriz);
 		
@@ -129,7 +136,8 @@ public class Analizador {
 	}
 
 	private static Funcion.Funciones determinarComplejidad(double [] vectorDesviaciones){
-		int index  = -1;
+		int index = -1;
+
 		double minimo = Estadistica.minimoVector(vectorDesviaciones);
 
 		for(int i = 0; i < vectorDesviaciones.length; i++){
@@ -137,6 +145,7 @@ public class Analizador {
 				index = i;
 			}
 		};
+
 
 		return Funcion.Funciones.values()[index];
 	}

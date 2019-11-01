@@ -5,14 +5,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class Analizador {
+public class Analizador implements Runnable{
 
 	public static final int NUM_EJECUCIONES = 3;
 	public static final int NUM_COMPLEJIDADES = 5;
 	public static final int NUM_DATOS = 10;
 	public static final int NUM_FUNCIONES = Funcion.Funciones.values().length;
 	public static final long TAMANO_DATOS_INICIAL = 10;
-	public static final long MULTIPLICADOR_TAMANO = 10;
 	public static Funcion.Funciones [][] complejidadPorMultArr = new Funcion.Funciones[0][0];
 
 	public static Timer timer = new Timer();
@@ -54,8 +53,14 @@ public class Analizador {
 					complejidadPorMultArr[complejidadPorMultArr.length - 1] = auxCompArr;
 				}
 			}
-		}		
+		}
+		exitApp.run();
 	} 
+
+	public void run(){
+		String [] args = new String[0];
+		Analizador.main(args);
+	}
 
 	private static Funcion.Funciones complejidad(long multiplicador){
 		long tiempo1 = System.currentTimeMillis();
@@ -98,7 +103,10 @@ public class Analizador {
 			tamanoInicial = tamanoDatosInicial;
 			for(int col = 0; col < NUM_DATOS; col++){
 				temp.iniciar();
-				Algoritmo.f(tamanoInicial*multiplicadorTamano); // Ejecuito el algoritmo y guardo el tiempo de ejecucion
+				try{
+					Algoritmo.f(tamanoInicial*multiplicadorTamano); // Ejecuito el algoritmo y guardo el tiempo de ejecucion
+				}
+				catch(Exception e){}
 				temp.parar();
 				long tiempoEjecucion = temp.tiempoPasado();
 
@@ -123,11 +131,16 @@ public class Analizador {
 		long n = TAMANO_DATOS_INICIAL;
 
 		for(int func = 0; func < NUM_FUNCIONES; func++){
+			vector = new double[NUM_DATOS];
 			n = TAMANO_DATOS_INICIAL;
 			Funcion funcion = new Funcion(func);
 			for(int pos = 0; pos < NUM_DATOS; pos++){
 				vector[pos] = vectorTiempos[pos] / funcion.calcular(n);
 				n++;
+			}
+
+			if(vector[0] == Double.POSITIVE_INFINITY){
+				vector = Arrays.copyOfRange(vector, 1, vector.length);
 			}
 			vectorCoeficiente[func] = Estadistica.coeficienteDeVariacion(vector);
 		}

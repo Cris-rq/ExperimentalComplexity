@@ -8,10 +8,10 @@ import java.util.TimerTask;
 public class Analizador implements Runnable{
 
 	public static final int NUM_EJECUCIONES = 3;
-	public static final int NUM_COMPLEJIDADES = 5;
+	public static final int NUM_COMPLEJIDADES = 6;
 	public static final int NUM_DATOS = 10;
 	public static final int NUM_FUNCIONES = Funcion.Funciones.values().length;
-	public static final long TAMANO_DATOS_INICIAL = 10;
+	public static long tamanoDatosInicial = 1;
 	public static Funcion.Funciones [][] complejidadPorMultArr = new Funcion.Funciones[0][0];
 
 	public static Timer timer = new Timer();
@@ -41,6 +41,10 @@ public class Analizador implements Runnable{
 			Funcion.Funciones [] auxCompArr = new Funcion.Funciones[0];
 
 			for(int i = 0; i < NUM_COMPLEJIDADES; i++){
+				if(tamanoDatosInicial == 1 && mult == 10) {
+					tamanoDatosInicial = 10;
+					mult = 1;
+				}
 				Funcion.Funciones comp = complejidad(mult);
 				
 				auxCompArr = Arrays.copyOf(auxCompArr, auxCompArr.length + 1);
@@ -67,7 +71,7 @@ public class Analizador implements Runnable{
 		Debugger debugger = new Debugger();
 		debugger.desactivar();
 
-		long [][] matriz = tiemposEjecucion(TAMANO_DATOS_INICIAL, multiplicador);
+		long [][] matriz = tiemposEjecucion(tamanoDatosInicial, multiplicador);
 		debugger.mostrar("MATRIZ:");
 		debugger.mostrarMatriz(matriz);
 		
@@ -94,17 +98,16 @@ public class Analizador implements Runnable{
 		Ejecuta el ALGORITMO para distintos tamaños de datos de entrada (NUM_DATOS) repetidas veces (NUM_EJECUCIONES).
 		Guarda los tiempos de ejecucion para cada tamaño de datos en una matriz de (NUM_EJECUCIONES x NUM_DATOS) celdas.
 	*/
-	private static long[][] tiemposEjecucion(long tamanoDatosInicial, long multiplicadorTamano){
+	private static long[][] tiemposEjecucion(long tamano, long multiplicadorTamano){
 		long [][] matrizDeTiempos = new long[NUM_EJECUCIONES][NUM_DATOS];
 		Temporizador temp = new Temporizador(0);
-		long tamanoInicial = tamanoDatosInicial;
-
+		long tam = tamano;
 		for(int fil = 0; fil < NUM_EJECUCIONES; fil++){
-			tamanoInicial = tamanoDatosInicial;
+			tamano = tam;
 			for(int col = 0; col < NUM_DATOS; col++){
 				temp.iniciar();
 				try{
-					Algoritmo.f(tamanoInicial*multiplicadorTamano); // Ejecuito el algoritmo y guardo el tiempo de ejecucion
+					Algoritmo.f(tamano*multiplicadorTamano); // Ejecuito el algoritmo y guardo el tiempo de ejecucion
 				}
 				catch(Exception e){}
 				temp.parar();
@@ -113,7 +116,7 @@ public class Analizador implements Runnable{
 				matrizDeTiempos[fil][col] = tiempoEjecucion; // Guardo el tiempo en la correspondiente celda de la matriz
 				
 				temp.reiniciar();
-				tamanoInicial++;
+				tamano++;
 			}
 			
 		}
@@ -128,19 +131,15 @@ public class Analizador implements Runnable{
 	private static double[] dispersionLimitesFunciones(double [] vectorTiempos){
 		double [] vector = new double[NUM_DATOS];
 		double [] vectorCoeficiente = new double[NUM_FUNCIONES];
-		long n = TAMANO_DATOS_INICIAL;
+		long n = tamanoDatosInicial;
 
 		for(int func = 0; func < NUM_FUNCIONES; func++){
 			vector = new double[NUM_DATOS];
-			n = TAMANO_DATOS_INICIAL;
+			n = tamanoDatosInicial;
 			Funcion funcion = new Funcion(func);
 			for(int pos = 0; pos < NUM_DATOS; pos++){
 				vector[pos] = vectorTiempos[pos] / funcion.calcular(n);
 				n++;
-			}
-
-			if(vector[0] == Double.POSITIVE_INFINITY){
-				vector = Arrays.copyOfRange(vector, 1, vector.length);
 			}
 			vectorCoeficiente[func] = Estadistica.coeficienteDeVariacion(vector);
 		}

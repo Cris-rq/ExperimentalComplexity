@@ -11,9 +11,12 @@ import java.io.InputStreamReader;
 
 public class Main{
 
+    public static final String [] idealStr = {"2N", "1", "N2", "NLOGN", "N", "N2", "1", "N3", "N2", "N", "NLOGN", "N", "LOGN", "2N", "1", "LOGN", "N", "NF", "N"};
+
     public static void main(String[] args) {
         File al = new File("Algoritmo.class");
         al.delete();
+        String [] arr = new String [19];
 
         for(int i = 1; i <= 19; i++){
             String algoritmoNStr = "Algoritmos/Algoritmo" + i + ".class";
@@ -39,18 +42,25 @@ public class Main{
                                       new InputStreamReader(analizadorProcess.getInputStream())
                                       );
                 analizadorProcess.waitFor();
-                System.out.println(read.readLine());
+                arr[i-1] = read.readLine();
+                System.out.println(arr[i-1]);
                 read.close();
             }
             catch(Exception e){}
-
-            //f2.renameTo(f);
         }
-    }
 
-    private static void temporizador(int seg){
-        long t1 = System.currentTimeMillis();
-        while((System.currentTimeMillis() - t1) <= (seg*1000)){}
-    }
+        double cont = 0;
+        for(int i = 0; i <= 18; i++){
+            if(arr[i].equals(idealStr[i])) cont++;
+        }
+        double ratio = (cont*100)/19;
+        double nota = cont - (19-cont)*(1/7);
+        nota = (nota*100)/19;
 
+        System.out.println("RATIO DE ACIERTO: " + ratio);
+        System.out.println("NOTA*: " + nota);
+
+
+
+    }
 }

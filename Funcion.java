@@ -79,6 +79,9 @@ public class Funcion{
             case FNF:
                 cadena = "NF";
                 break;
+            default:
+                cadena = "TIMEOUT ERROR";
+                break;
         }
 
         return cadena;

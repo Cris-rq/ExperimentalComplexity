@@ -1,5 +1,8 @@
 public class Estadistica{
 
+    /* Clase que recoge distintas funciones de matemática estadística que nos
+       servirán en ciertas partes del código principal */
+
     public static double media(double [] datos){
         double media = 0;
         for(double n : datos){
@@ -42,6 +45,8 @@ public class Estadistica{
         for (int i = 0; i < a.length; ++i) {
             int count = 0;
             for (int j = 0; j < a.length; ++j) {
+               
+               
                 if (a[j] == a[i]) ++count;
             }
             if (count > maxCount) {

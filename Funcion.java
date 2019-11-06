@@ -1,5 +1,7 @@
 public class Funcion{
 
+    /* Lista de enumerados para determinar cada una de las complejidades que debemos
+       comprobar */
     public enum Funciones {F1, FLOGN, FN, FNLOGN, FN2, FN3, F2N, FNF;}
     private Funciones funcion;
 
